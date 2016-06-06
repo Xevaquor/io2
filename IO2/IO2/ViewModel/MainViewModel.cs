@@ -1,16 +1,12 @@
 ﻿using IO2.Messages;
-using ReactiveUI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Threading;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace IO2.ViewModel
 {
-    public class MainViewModel : ReactiveObject
+    public class MainViewModel : ObservableObject
     {
         string statusText = "Gotowy";
         public string StatusText
@@ -18,7 +14,8 @@ namespace IO2.ViewModel
             get { return statusText; }
             set
             {
-                this.RaiseAndSetIfChanged(ref statusText, value);
+                statusText = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -26,9 +23,8 @@ namespace IO2.ViewModel
 
         public MainViewModel()
         {
-            MessageBus.Current.Listen<Messages.UpdateStatusMessage>()
-                .Subscribe(OnStatusMessage);
-
+            Messenger.Default.Register<UpdateStatusMessage>(this, OnStatusMessage);
+            
             timer.Interval = TimeSpan.FromSeconds(5);
             timer.Tick += (s, e) => StatusText = "Gotowy";
             timer.Start();

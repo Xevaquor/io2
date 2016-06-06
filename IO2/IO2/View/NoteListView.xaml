@@ -28,13 +28,13 @@
             <TextBox MinWidth="100" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding SearchResults}" >
+        <ListView Grid.Row="1" Grid.Column="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" IsEnabled="{Binding ReadMode}" >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Title}"/>
-                        <TextBlock Text="{Binding Updated, Converter={StaticResource HumanizerDateTimeConverter}}"/>
-                        <TextBlock Text="{Binding Content}"/>
+                    <StackPanel Orientation="Vertical" MaxWidth="150">
+                        <TextBlock Text="{Binding Title}" FontSize="14.667" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Updated, Converter={StaticResource HumanizerDateTimeConverter}}" FontStyle="Italic" FontSize="10.667"/>
+                        <TextBlock Text="{Binding Content}" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

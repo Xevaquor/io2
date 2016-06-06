@@ -12,5 +12,13 @@ namespace IO2.Model
         public string Title { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
+
+        public Note()
+        {
+            Created = DateTime.Now;
+            Updated = DateTime.Now;
+        }
     }
+
+
 }
