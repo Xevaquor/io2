@@ -186,8 +186,8 @@ namespace IO2.ViewModel
             SelectedNote = msg.Note;
             IsDirty = false;
             Readonly = true;
-            Title = msg.Note.Title;
-            Content = msg.Note.Content;
+            Title = msg.Note?.Title;
+            Content = msg.Note?.Content;
             performingUpdates = false;
         }
     }

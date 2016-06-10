@@ -98,7 +98,7 @@ namespace IO2.ViewModel
 
         private ObservableCollection<Note> GetSearchResults(string term)
         {
-            var obs = new ObservableCollection<Note>(noteRepository.Search(term).OrderByDescending(x=> x.Updated));
+            var obs = new ObservableCollection<Note>(noteRepository.Search(term).OrderByDescending(x => x.Updated));
             return obs;
         }
     }
