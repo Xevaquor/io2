@@ -138,14 +138,22 @@ namespace IO2.ViewModel
         {
             if (ModyfyingExisting)
             {
-                var answer = prompt.OkCancel("Zapisać zmiany?");
-                if (!answer)
+                var answer = prompt.YesNoCancel("Zapisać zmiany?");
+                if (answer == false)
                 {
                     // użytkownik anulował chęć zapisu zmian
                     CreatingNew = false;
                     ModyfyingExisting = false;
                     OnNoteSelected(new NoteSelectedMessage(SelectedNote));
                     return;
+                }
+                else if (answer == true)
+                {
+                    // tak, zapisac zmiany
+                }
+                else
+                {
+                    return; //nic się nie stało, Polacy nic się nie stało...
                 }
             }
             
