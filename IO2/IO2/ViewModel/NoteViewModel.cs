@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Data;
 using Autofac;
 using GalaSoft.MvvmLight;
@@ -46,10 +47,11 @@ namespace IO2.ViewModel
             get { return selectedNote; }
             set
             {
+                /*
                 if (value != null && selectedNote != value && IsDirty)
                     AskDirty();
+                IsDirty = false;*/
                 selectedNote = value;
-                IsDirty = false;
                 RaisePropertyChanged();
             }
         }
@@ -124,10 +126,41 @@ namespace IO2.ViewModel
         {
             Readonly = false;
             IsDirty = true;
+            CreatingNew = false;
+            ModyfyingExisting = true;
         }
+
+        public bool SaveConfirmationRequired { get; set; } = false;
+        public bool CreatingNew { get; set; } = false;
+        public bool ModyfyingExisting { get; set; } = false;
 
         private void PerformSave()
         {
+            if (ModyfyingExisting)
+            {
+                var answer = prompt.OkCancel("Zapisać zmiany?");
+                if (!answer)
+                {
+                    // użytkownik anulował chęć zapisu zmian
+                    CreatingNew = false;
+                    ModyfyingExisting = false;
+                    OnNoteSelected(new NoteSelectedMessage(SelectedNote));
+                    return;
+                }
+            }
+            
+            SelectedNote.Updated = DateTime.Now;
+            SelectedNote.Content = Content;
+            SelectedNote.Title = Title;
+            repo.Upsert(SelectedNote);
+            repo.Save();
+            IsDirty = false;
+            CreatingNew = false;
+            ModyfyingExisting = false;
+            OnNoteSelected(new NoteSelectedMessage(SelectedNote));
+
+            return;
+
             performingUpdates = true;
             if (SelectedNote == null)
                 return;
@@ -163,32 +196,94 @@ namespace IO2.ViewModel
                 return;
             }
 
+            if (CreatingNew)
+            {
+                var result = prompt.OkCancel("Anulować tworzenie notatki?");
+                if (result)
+                {
+                    // tak, na pewno chcemy anulować
+                    SelectedNote = null;
+                    Readonly = true;
+                    CreatingNew = false;
+                    IsDirty = false;
+                    SaveConfirmationRequired = false;
+                }
+                else
+                {
+                    // pomyłka, pracujemy dalej
+                }
+                return;
+            }
+
             if (prompt.OkCancel("Na pewno usunąć?"))
             {
                 repo.Delete(SelectedNote);
+                SelectedNote = null;
+                Readonly = true;
+                CreatingNew = false;
+                IsDirty = false;
+                SaveConfirmationRequired = false;
             }
         }
 
         private void PerformAdd()
         {
+            if (CreatingNew)
+            {
+                var result = prompt.OkCancel("Anulować tworzenie notatki?");
+                if (result)
+                {
+                    // tak, na pewno chcemy anulować
+                }
+                else
+                {
+                    // pomyłka, pracujemy dalej
+                    return;
+                }
+            }
             SelectedNote = new Note();
             Title = "";
             Content = "";
+            SaveConfirmationRequired = false;
             IsDirty = true;
             Readonly = false;
+            CreatingNew = true;
+            ModyfyingExisting = false;
         }
 
         private void OnNoteSelected(NoteSelectedMessage msg)
         {
-            if(performingUpdates) return;
+            Debug.Assert(msg != null);
+            // mamy niezapisane zmiany, co z nimi?
+            if (CreatingNew)
+            {
+                var result = prompt.OkCancel("Anulować tworzenie notatki?");
+                if (result)
+                {
+                    // tak, na pewno chcemy anulować
+                }
+                else
+                {
+                    // pomyłka, pracujemy dalej
+                    return;
+                }
+            }
+            if (ModyfyingExisting)
+            {
+                //
+            }
+
+            //if(performingUpdates) return;
          
-            performingUpdates = true;
+            //performingUpdates = true;
             SelectedNote = msg.Note;
             IsDirty = false;
             Readonly = true;
             Title = msg.Note?.Title;
             Content = msg.Note?.Content;
-            performingUpdates = false;
+            CreatingNew = false;
+            ModyfyingExisting = false;
+            //performingUpdates = false;
         }
     }
 }

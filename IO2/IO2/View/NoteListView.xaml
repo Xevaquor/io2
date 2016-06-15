@@ -28,7 +28,7 @@
             <TextBox MinWidth="100" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
 
-        <ListView Grid.Row="1" Grid.Column="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedNote, Mode=TwoWay}" IsEnabled="{Binding ReadMode}" >
+        <ListView Grid.Row="1" Grid.Column="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedNote, Mode=OneTime}" IsEnabled="{Binding ReadMode}" SelectionChanged="ListView_SelectionChanged" MouseLeftButtonUp="ListView_MouseLeftButtonUp" >
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical" MaxWidth="150">
