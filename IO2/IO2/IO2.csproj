@@ -96,6 +96,7 @@
     <Compile Include="Messages\NoteSelectedMessage.cs" />
     <Compile Include="Messages\UpdateStatusMessage.cs" />
     <Compile Include="Services\PromptService.cs" />
+    <Compile Include="ValueConverter\BoolToVisibilityConverter.cs" />
     <Compile Include="ValueConverter\ObjectPresetToVisibilityConverter.cs" />
     <Compile Include="ValueConverter\HumanizrDateTimeConverter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

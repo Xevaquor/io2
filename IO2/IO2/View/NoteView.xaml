@@ -10,6 +10,7 @@
             Background="AntiqueWhite"
              >
     <UserControl.Resources>
+        <ValueConverter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <ValueConverter:ObjectPresetToVisibilityConverter x:Key="ObjectPresetToVisibilityConverter"/>
     </UserControl.Resources>
     <UserControl.DataContext>
@@ -30,21 +31,23 @@
             <Button Content="-"  Command="{Binding DeleteCommand}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Edytuj" HorizontalAlignment="Left" Command="{Binding EditCommand}" />
-            <Button Content="Zapisz"  Command="{Binding SaveCommand}" HorizontalAlignment="Right"/>
-        </StackPanel>
+            <Button Grid.Row="1" Grid.Column="1" Content="Edytuj" HorizontalAlignment="Left" Command="{Binding EditCommand}" Visibility="{Binding IsEnabled, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay, RelativeSource={RelativeSource Self}}" />
+        <Button Grid.Row="1" Grid.Column="2" Content="Zapisz"  Command="{Binding SaveCommand}" HorizontalAlignment="Right" Visibility="{Binding IsEnabled, Converter={StaticResource BoolToVisibilityConverter}, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
 
         <Grid Grid.Row="0" Grid.Column="1" DataContext="{Binding SelectedNote}" d:DataContext="{Binding}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="124*"/>
+                <ColumnDefinition Width="19*"/>
+            </Grid.ColumnDefinitions>
 
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Nie wybrano notatki" Panel.ZIndex="-9999" FontSize="26.667"/>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Nie wybrano notatki" Panel.ZIndex="-9999" FontSize="26.667" Grid.ColumnSpan="2" Margin="24,121,23,121"/>
 
-            <Grid Visibility="{Binding Converter={StaticResource ObjectPresetToVisibilityConverter}, Mode=OneWay}">
+            <Grid Visibility="{Binding Converter={StaticResource ObjectPresetToVisibilityConverter}, Mode=OneWay}" Grid.ColumnSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TextBox IsReadOnly="{Binding Readonly}" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" DataContext="{DynamicResource NoteVM}"/>
+                <TextBox IsReadOnly="{Binding Readonly}" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged }" DataContext="{DynamicResource NoteVM}" FontSize="24" HorizontalContentAlignment="Center"/>
                 <TextBox IsReadOnly="{Binding Readonly}" Grid.Row="1" TextWrapping="Wrap" Text="{Binding Content, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" DataContext="{DynamicResource NoteVM}"/>
 
             </Grid>
