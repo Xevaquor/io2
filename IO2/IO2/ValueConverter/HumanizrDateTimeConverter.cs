@@ -17,7 +17,7 @@ namespace IO2.ValueConverter
             if(value is DateTime)
             {
                 var dt = (DateTime)value;
-                return dt.Humanize(utcDate: false);
+                return dt.Humanize(utcDate: false,culture: new CultureInfo("pl-PL"));
             }
             return null;
         }
